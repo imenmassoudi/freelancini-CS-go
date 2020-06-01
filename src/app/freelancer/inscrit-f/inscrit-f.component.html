@@ -3,62 +3,89 @@
   </mat-toolbar>
 
 <mat-horizontal-stepper linear #stepper>
-  <mat-step [stepControl]="service.ffree">
-    <form [formGroup]="service.ffree">
+  <mat-step [stepControl]="vinformation">
+    <form [formGroup]="vinformation" >
       <ng-template matStepLabel>Votre Information</ng-template>
-      <div >
+      <div>
         <input type="hidden" formControlName="reclamation">
         <input type="hidden"  formControlName="point">
+        <input type="hidden"  formControlName="img">
         <mat-form-field>
-            <input formControlName="prenom" type="text" matInput placeholder="Prenom" required>
+            <input formControlName="prenom" type="text" matInput placeholder="Prenom">
+            <mat-error *ngIf="vinformation.get('prenom')?.hasError('required')"><p>Saisir votre <strong>Prenom</strong></p></mat-error>
         </mat-form-field>
         <br/>
         <mat-form-field>
-            <input formControlName="nom" type="text" matInput placeholder="Nom" required>
+            <input formControlName="nom" type="text" matInput placeholder="Nom" >
+            <mat-error *ngIf="vinformation.get('nom')?.hasError('required')"><p>Saisir votre <strong>Nom</strong> </p></mat-error>
         </mat-form-field>
         <br/>
         <mat-form-field>
-            <input formControlName="$mail" type="email" matInput placeholder="Email" required>
-        </mat-form-field>
+            <input formControlName="email"  matInput placeholder="Email" >
+            <mat-error *ngIf="vinformation.get('email')?.hasError('email')&&!vinformation.get('email')?.hasError('required')">Email non <strong>Valide</strong></mat-error>
+            <mat-error *ngIf="!vinformation.get('email')?.hasError('email')&&!vinformation.get('email')?.hasError('required')">Ce Email Et déja <strong>Utiliser</strong></mat-error>
+           
+            <mat-error *ngIf="vinformation.get('email')?.hasError('required')">Saisir votre <strong>Email</strong> </mat-error>
+            
+          </mat-form-field>
         <br/>
         <mat-form-field>
-            <input formControlName="password" matInput  type="password"placeholder="mot de passe" required>
-        </mat-form-field>
+            <input formControlName="password" matInput  type="password"placeholder="Mot de passe" >
+            <mat-error *ngIf="!vinformation.get('password')?.hasError('required')"> <strong>6 caractère</strong> au moin</mat-error>
+            <mat-error *ngIf="vinformation.get('password')?.hasError('required')">Saisir votre <strong>Mot de passe</strong> </mat-error>
+          </mat-form-field>
         
-        <mat-form-field>
-            <input  formControlName="cpassword" matInput  type="password"placeholder="confirmer mot de passe" required>
-        </mat-form-field>
+       
         <div>
             
             <mat-radio-group formControlName="genre" required>
                 <mat-radio-button value="1">Homme</mat-radio-button>
                 <mat-radio-button value="2">Femme</mat-radio-button>
+               
             </mat-radio-group>
+            <mat-error *ngIf="vinformation.get('genre')?.hasError('required')">Choisir un sexe</mat-error>
         </div>
         <mat-form-field>
-            <input  formControlName="tel" matInput  type="number" placeholder="téléphone" required>
+          <span matPrefix>+216 &nbsp;</span>
+            <input  formControlName="tel" matInput  type="tel" placeholder="Télephone" >
+            <mat-error *ngIf="!vinformation.get('tel')?.hasError('required')"><strong>8 Nombre</strong></mat-error>
+          <mat-error *ngIf="vinformation.get('tel')?.hasError('required')">Saisir votre<strong>Téléphone</strong></mat-error>
+          
         </mat-form-field>
     <div>
-        <mat-checkbox formControlName="accept" required>J'ai lu et j'accepte les termes et conditions</mat-checkbox>
+        <mat-checkbox  required >J'ai lu et j'accepte les termes et conditions</mat-checkbox>
     </div>
     <div>
-      <button mat-button matStepperNext color="primary" (click)="addfree()" >Suivant</button>
+      <button   mat-button matStepperNext color="primary" >Suivant</button>
     </div>
       </div>
       
      
     </form>
   </mat-step>
-  <mat-step [stepControl]="service.ffreec">
-    <form [formGroup]="service.ffreec">
+  <mat-step [stepControl]="vdomain">
+    <form [formGroup]="vdomain">
+     
+      
       <ng-template matStepLabel>Votre Domaine</ng-template>
-      <mat-selection-list #shoes formControlName="domaine">
-        <mat-list-option *ngFor="let d of domaine">
-          {{d}}
-        </mat-list-option>
+        <mat-selection-list  formControlName="domaine" >
+        <mat-list-option   *ngFor="let d of domainee" [value]="d" required>
+         {{d}}
+        </mat-list-option> 
       </mat-selection-list>
-      <button mat-button matStepperPrevious>Retour</button>
-      <button mat-button matStepperNext>Suivant</button>
+
+  
+    
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput style="width:100%"formControlName="description"></textarea>
+      </mat-form-field>
+      
+      <div>
+        <button mat-button matStepperPrevious>Retour</button>
+        <button mat-button matStepperNext >Suivant</button>
+      </div>
+      
       
     </form>
   </mat-step>
@@ -67,7 +94,7 @@
     <p>Bienvenu Cher Freelancer</p>
     <div>
       <button mat-button matStepperPrevious>Retour</button>
-      <button mat-button (click)="stepper.reset()">S'inscrire</button>
+      <button mat-button type="submit" (click)="insc()">S'inscrire</button>
     </div>
   </mat-step>
 </mat-horizontal-stepper>

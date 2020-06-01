@@ -22,6 +22,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import{MaterialModule} from './material/material.module';
 import { InscritFComponent } from './freelancer/inscrit-f/inscrit-f.component';
 import { InscritCComponent } from './client/inscrit-c/inscrit-c.component';
+import { ConnexionComponent } from './visiteur/connexion/connexion.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import { ConnectfComponent } from './freelancer/connectf/connectf.component';
 
 
 @NgModule({
@@ -35,7 +38,10 @@ import { InscritCComponent } from './client/inscrit-c/inscrit-c.component';
     FooterComponent,
     CarouselComponent,
     InscritFComponent,
-    InscritCComponent
+    InscritCComponent,
+    ConnexionComponent,
+    ConnectfComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -48,10 +54,11 @@ import { InscritCComponent } from './client/inscrit-c/inscrit-c.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents:[InscritFComponent,InscritCComponent]
+  entryComponents:[InscritFComponent,InscritCComponent,ConnexionComponent,ConnectfComponent]
 })
 export class AppModule { }

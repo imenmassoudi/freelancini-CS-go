@@ -1,59 +1,77 @@
 import { Injectable } from '@angular/core';
 import{FormGroup,FormControl} from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { AngularFirestoreDocument, AngularFirestoreCollection, AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
+
 @Injectable({
   providedIn: 'root'
 })
 export class InscriptionService {
-Free:Observable <any> 
-freelancer:AngularFirestoreDocument<any>;
-private dbPath = '/Freelancer';
-freelancercat: AngularFirestoreCollection<any>=null;
-  constructor(public free: AngularFirestore) { 
+private enventAuthError=new BehaviorSubject<string>("");
+enventAuthError$=this.enventAuthError.asObservable();
+  nfreelancer:any;
+private dbPath = 'Freelancer';
+private id;
+private dbPath2='Client';
+freelancercat: AngularFirestoreCollection<any>;
+clientcat:AngularFirestoreCollection<any>;
+  
+  constructor(public free: AngularFirestore,private afAuth:AngularFireAuth,private router:Router) { 
     this.freelancercat=free.collection(this.dbPath);
+    this.clientcat=free.collection(this.dbPath2);
   }
-  fcli :FormGroup=new FormGroup({
-    
-    mail:new FormControl(''),
-    
-    password:new FormControl(''),
-    cpassword:new FormControl(''),
-   
-    tel:new FormControl(),
-    client:new FormControl(''),
-    accept:new FormControl(false) 
-    
+  
+  //partie ajout freelacner et client au  meme temp creation d'authentification
+createfreelancer(freelancer,domaine)
+{
+this.afAuth.createUserWithEmailAndPassword(freelancer.email,freelancer.password)
+.then(UserCredential=>{
+  this.addfreelancer(freelancer,domaine).then(()=>{this.router.navigate(['']);}
 
-  });
-  ffree:FormGroup=new FormGroup({
-    $mail:new FormControl(''),
-    nom:new FormControl(''),
-    prenom:new FormControl(''),
-    password:new FormControl(''),
-    cpassword:new FormControl(''),
-    genre:new FormControl(0),
-    tel:new FormControl(),
-    accept:new FormControl(false),
-    reclamation:new FormControl(0),
-    point:new FormControl(0),
-    img:new FormControl(''),
-  });
-  ffreec:FormGroup=new FormGroup({
-    $id: new FormControl('null'),
-    domaine : new FormControl(''),
-  })
-  addfreelancer(Freelancer){
-    this.freelancercat.add({
-      email:Freelancer.$mail,
-      image:Freelancer.img,
-      nbr_reclamation:Freelancer.reclamation,
-      nom:Freelancer.nom,
-      password:Freelancer.password,
-      point:Freelancer.point,
-      prenom:Freelancer.prenom,
-      sexe:Freelancer.genre,
-      telephone:Freelancer.tel,
-    })
+
+  );
+})
+.catch(error=>{this.enventAuthError.next(error)})
+}
+  addfreelancer(info,info2){
+   return( this.freelancercat.add(info).then(ref=>{
+      this.id =ref.id;
+      console.log(this.id);
+      this.freelancercat.doc(this.id).update(info2);
+    }))
+   
+    }
+
+    createclient(client)
+    {
+      this.afAuth.createUserWithEmailAndPassword(client.email,client.password)
+      .then(UserCredential=>{
+        this.addclient(client).then(()=>{this.router.navigate(['']);})
+      
+      })
+      .catch(error=>{this.enventAuthError.next(error)})
+    }
+
+    addclient(info)
+    {
+      return this.clientcat.add(info);
+    }
+  
+  //partie login et logout freelancer et client
+  loginf(freelacner)
+  {
+    this.afAuth.signInWithEmailAndPassword(freelacner.email,freelacner.password)
+    .catch(error=>{this.enventAuthError.next(error)})
+  }
+  loginc(client)
+  {
+    this.afAuth.signInWithEmailAndPassword(client.email,client.password)
+    .catch(error=>{this.enventAuthError.next(error)})
+  }
+  logout()
+  {
+    this.afAuth.signOut()
   }
 }

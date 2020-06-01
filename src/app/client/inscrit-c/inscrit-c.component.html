@@ -1,35 +1,43 @@
 <mat-grid-list cols="2" >
     <!-- fromulaire du client-->
     <mat-grid-tile>
-<form [formGroup]="service.fcli">
+<form [formGroup]="fcli" (ngSubmit)="addclient()">
     <mat-toolbar>
         <span>Client</span>
         </mat-toolbar>
 <div >
+    <input type="hidden"  formControlName="img">
     <mat-form-field>
         <input formControlName="client" type="text" matInput placeholder="Client/Entreprise">
+        <mat-error *ngIf="fcli.get('client')?.hasError('required')">Saisir votre nom <strong>Client/Entreprise</strong></mat-error>
     </mat-form-field>
     <br/>
     <mat-form-field>
-        <input formControlName="mail" type="email" matInput placeholder="email">
+        <input formControlName="email" type="email" matInput placeholder="email">
+     <mat-error *ngIf="fcli.get('email')?.hasError('email')&&!fcli.get('email')?.hasError('required')">Email<strong>Invalide</strong></mat-error>
+     
+     <mat-error *ngIf="fcli.get('email')?.hasError('required')">Saisir votre <strong>Email</strong></mat-error>
+     <mat-error *ngIf="!fcli.get('email')?.hasError('email')&&!fcli.get('email')?.hasError('required')">Ce Email Et Déja <strong>Utiliser</strong></mat-error>
     </mat-form-field>
     <br/>
     <mat-form-field>
         <input formControlName="password" matInput  type="password" placeholder="mot de passe">
+        <mat-error *ngIf="!fcli.get('password')?.hasError('required')">au moin <strong>6 caractère</strong></mat-error>
+    <mat-error *ngIf="fcli.get('password')?.hasError('required')">Saisir votre <strong>Mot de passe</strong></mat-error>
     </mat-form-field>
     <br/>
+   
     <mat-form-field>
-        <input  formControlName="cpassword" matInput  type="password" placeholder="confirmer mot de passe">
-    </mat-form-field>
-    <br/>
-    <mat-form-field>
-        <input  formControlName="tel" matInput  type="number" placeholder="téléphone">
+        <span matPrefix>+216 &nbsp;</span>
+        <input  formControlName="tel" matInput  type="tel" placeholder="téléphone">
+        <mat-error *ngIf="!fcli.get('tel')?.hasError('required')"><strong>8 Nombre</strong></mat-error>
+        <mat-error *ngIf="fcli.get('tel')?.hasError('required')">Saisir votre<strong>Téléphone</strong></mat-error>
     </mat-form-field>
     <br/>
 <div>
-    <mat-checkbox formControlName="accept">J'ai lu et j'accepte les termes et conditions</mat-checkbox>
+    <mat-checkbox required>J'ai lu et j'accepte les termes et conditions</mat-checkbox>
 </div>
-   <div><button mat-raised-button color="primary">S'inscrire</button></div>
+   <div><button mat-raised-button [disabled]="fcli.invalid" type="submit"color="primary">S'inscrire</button></div>
         
    
 </div>
